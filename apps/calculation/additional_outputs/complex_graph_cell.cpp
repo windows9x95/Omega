@@ -39,7 +39,7 @@ void ComplexGraphView::drawRect(KDContext * ctx, KDRect rect) const {
    * and the line of equation (real*t,imag*t).
    * (a*cos(t), b*sin(t)) = (real*t,imag*t) --> tan(t) = sign(a)*sign(b) (± π)
    * --> t = π/4 [π/2] according to sign(a) and sign(b). */
-  float th = real < 0.0f ? 3.0f*M_PI/4.0f : M_PI/4.0f;
+  float th = real < 0.0f ? (float)(3.0*M_PI_4) : (float)M_PI_4;
   th = imag < 0.0f ? -th : th;
   // Compute ellipsis parameters a and b
   float factor = 5.0f;
@@ -48,7 +48,7 @@ void ComplexGraphView::drawRect(KDContext * ctx, KDRect rect) const {
   // Avoid flat ellipsis for edge cases (for real = 0, the case imag = 0 is excluded)
   if (real == 0.0f) {
     a = 1.0f/factor;
-    th = imag < 0.0f ? -M_PI/2.0f : M_PI/2.0f;
+    th = imag < 0.0f ? (float)-M_PI_2 : (float)M_PI_2;
   }
   std::complex<float> parameters(a,b);
   drawCurve(ctx, rect, 0.0f, 1.0f, 0.01f,
@@ -71,7 +71,7 @@ void ComplexGraphView::drawRect(KDContext * ctx, KDRect rect) const {
   // 're(z)' label
   drawLabel(ctx, rect, real, 0.0f, "re(z)", Palette::Red, CurveView::RelativePosition::None, imag >= 0.0f ? CurveView::RelativePosition::Before : CurveView::RelativePosition::After);
   // 'im(z)' label
-  drawLabel(ctx, rect, 0.0f, imag, "im(θ)", Palette::Red, real >= 0.0f ? CurveView::RelativePosition::Before : CurveView::RelativePosition::After, CurveView::RelativePosition::None);
+  drawLabel(ctx, rect, 0.0f, imag, "im(z)", Palette::Red, real >= 0.0f ? CurveView::RelativePosition::Before : CurveView::RelativePosition::After, CurveView::RelativePosition::None);
   // '|z|' label, the relative horizontal position of this label depends on the quadrant
   CurveView::RelativePosition verticalPosition = real*imag < 0.0f ? CurveView::RelativePosition::Before : CurveView::RelativePosition::After;
   if (real == 0.0f) {

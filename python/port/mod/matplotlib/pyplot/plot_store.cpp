@@ -1,4 +1,5 @@
 #include "plot_store.h"
+#include <algorithm>
 
 namespace Matplotlib {
 
@@ -62,7 +63,7 @@ T PlotStore::ListIterator<T>::operator*() {
 };
 
 void checkFloatType(mp_obj_t * elements, size_t nbOfElements) {
-  for (int i = 0; i < nbOfElements; i++) {
+  for (size_t i = 0; i < nbOfElements; i++) {
     // TODO: we don't take advantage of the fact that we extracted the value at the sametime... Maybe change the way things are done, build the c objects in addItem instead of allocating them on the python heap? Or use float array in python?
     mp_float_t value;
     if (!mp_obj_get_float_maybe(elements[i], &value)) {
@@ -160,15 +161,12 @@ void PlotStore::addLabel(mp_obj_t x, mp_obj_t y, mp_obj_t string) {
 
 // Axes
 
-static inline float minFloat(float x, float y) { return x < y ? x : y; }
-static inline float maxFloat(float x, float y) { return x > y ? x : y; }
-
 void updateRange(float * xMin, float * xMax, float * yMin, float * yMax, float x, float y) {
   if (!std::isnan(x) && !std::isinf(x) && !std::isnan(y) && !std::isinf(y)) {
-    *xMin = minFloat(*xMin, x);
-    *xMax = maxFloat(*xMax, x);
-    *yMin = minFloat(*yMin, y);
-    *yMax = maxFloat(*yMax, y);
+    *xMin = std::min(*xMin, x);
+    *xMax = std::max(*xMax, x);
+    *yMin = std::min(*yMin, y);
+    *yMax = std::max(*yMax, y);
   }
 }
 
